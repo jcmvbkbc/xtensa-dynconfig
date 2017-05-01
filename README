@@ -1,0 +1,17 @@
+This GCC plugin configures xtensa-gcc for the specific xtensa CPU. It will
+only load into gcc version that supports such dynamic configuration.
+Without this plugin gcc will produce code for the default xtensa core: the
+FSF one, or for the core configured with the xtensa configuration overlay.
+
+Building:
+
+To build this plugin you need xtensa-gcc with plugins directory installed
+and the host gcc. Install configuration overlay for the target xtensa core
+into the directory named <config-name> and run make CONFIG=<config-name>
+in the current directory. xtensa-gcc must be in the PATH.
+
+Using:
+
+Invoke xtensa-gcc with additional parameter
+
+  -fplugin=<full-path-to>/xtensa-gcc-config-<config-name>.so
