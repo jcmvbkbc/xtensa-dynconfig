@@ -6,11 +6,11 @@ with the xtensa configuration overlay.
 
 Building:
 
-To build this plugin you need binutils source directory available.
+To build this plugin you need binutils-gdb source directory available.
 Install configuration overlay for the target xtensa core into the directory
 named config/<config-name> and run
 
-  make BINUTILS_DIR=<binutils-source-path> CONFIG=<config-name>
+  make BINUTILS_DIR=<binutils-gdb-source-path> CONFIG=<config-name>
 
 in the current directory.
 
@@ -21,4 +21,12 @@ configuration shared object:
 
   $ export XTENSA_GNU_CONFIG=`pwd`/xtensa-config-<config-name>.so
 
-Run the compiler, assembler, linker or other binutils as usual.
+Run the compiler, assembler, linker, debugger or other binutils as usual.
+
+Dynamic configuration works both for cross and native toolchain.
+The following parts of the toolchain still need to be configured statically:
+- target libraries that are a part of gcc (e.g. libgcc) need proper
+  include/xtensa-config.h header in the gcc;
+- target gdbserver needs proper include/xtensa-config.h
+  gdb/gdbserver/xtensa-config.c and gdb/gdbserver/xtensa-xtregs.c in the
+  binutils-gdb.
