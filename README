@@ -25,8 +25,6 @@ Run the compiler, assembler, linker, debugger or other binutils as usual.
 
 Dynamic configuration works both for cross and native toolchain.
 The following parts of the toolchain still need to be configured statically:
-- target libraries that are a part of gcc (e.g. libgcc) need proper
-  include/xtensa-config.h header in the gcc;
 - target gdbserver needs proper include/xtensa-config.h
   gdb/gdbserver/xtensa-config.c and gdb/gdbserver/xtensa-xtregs.c in the
   binutils-gdb.
