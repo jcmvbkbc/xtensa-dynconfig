@@ -3,10 +3,8 @@ SOURCE_FILES = xtensa-config.c \
 	       config/$(CONFIG)/binutils/bfd/xtensa-modules.c \
 	       config/$(CONFIG)/gdb/gdb/xtensa-config.c \
 	       config/$(CONFIG)/gdb/gdb/xtensa-xtregs.c
-INCLUDE += -I. \
-	   -Iconfig/$(CONFIG)/binutils/include \
-	   -I$(BINUTILS_DIR)/include \
-	   -I$(BINUTILS_DIR)/gdb
+INCLUDE += -Iinclude \
+	   -Iconfig/$(CONFIG)/binutils/include
 
 CFLAGS += $(INCLUDE) -fPIC -O2
 

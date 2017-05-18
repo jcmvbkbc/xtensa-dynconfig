@@ -1,16 +1,15 @@
-This GCC/binutils plugin configures xtensa GCC and binutils for the specific
-xtensa CPU. It will only load into GCC and binutils versions that support
-such dynamic configuration. Without this plugin GCC and binutils will produce
-code for the default xtensa core: the FSF one, or for the core configured
-with the xtensa configuration overlay.
+This GCC/binutils/GDB plugin configures xtensa GCC, binutils and GDB for the
+specific xtensa CPU. It will only load into GCC, binutils and GDB versions
+that support such dynamic configuration. Without this plugin GCC and binutils
+will produce code for the default xtensa core: the FSF one, or for the core
+configured with the xtensa configuration overlay.
 
 Building:
 
-To build this plugin you need binutils-gdb source directory available.
 Install configuration overlay for the target xtensa core into the directory
 named config/<config-name> and run
 
-  make BINUTILS_DIR=<binutils-gdb-source-path> CONFIG=<config-name>
+  make CONFIG=<config-name>
 
 in the current directory.
 
