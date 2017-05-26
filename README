@@ -27,3 +27,13 @@ The following parts of the toolchain still need to be configured statically:
 - target gdbserver needs proper include/xtensa-config.h
   gdb/gdbserver/xtensa-config.c and gdb/gdbserver/xtensa-xtregs.c in the
   binutils-gdb.
+
+Note:
+
+the GCC Runtime Library Exception
+(https://www.gnu.org/licenses/gcc-exception-3.1.en.html) has rules that apply
+here. If you want to distribute the binary produced by GCC using this plugin,
+the plugin code (including the xtensa configuration overlay) must be available
+under a GPL-compatible license. The people to whom you distribute the binary
+produced by GCC must be able to themselves build the plugin used to create
+the binary.
