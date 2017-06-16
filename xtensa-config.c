@@ -39,3 +39,5 @@ const char *xtensa_config_strings[] = {
 	XTENSA_CONFIG_ENTRY_LIST,
 	NULL,
 };
+
+int plugin_is_GPL_compatible;
