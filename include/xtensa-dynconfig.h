@@ -1,5 +1,5 @@
 /* Xtensa configuration settings.
-   Copyright (C) 2017 Free Software Foundation, Inc.
+   Copyright (C) 2022 Free Software Foundation, Inc.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -15,69 +15,70 @@
    along with this program; if not, write to the Free Software
    Foundation, 51 Franklin Street - Fifth Floor, Boston, MA 02110-1301, USA.  */
 
-#ifndef XTENSA_DYNAMIC_CONFIG_H
-#define XTENSA_DYNAMIC_CONFIG_H
+#ifndef XTENSA_DYNCONFIG_H
+#define XTENSA_DYNCONFIG_H
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-struct xtensa_config {
-    unsigned long config_size;
-    unsigned int xchal_have_be;
-    unsigned int xchal_have_density;
-    unsigned int xchal_have_const16;
-    unsigned int xchal_have_abs;
-    unsigned int xchal_have_addx;
-    unsigned int xchal_have_l32r;
-    unsigned int xshal_use_absolute_literals;
-    unsigned int xshal_have_text_section_literals;
-    unsigned int xchal_have_mac16;
-    unsigned int xchal_have_mul16;
-    unsigned int xchal_have_mul32;
-    unsigned int xchal_have_mul32_high;
-    unsigned int xchal_have_div32;
-    unsigned int xchal_have_nsa;
-    unsigned int xchal_have_minmax;
-    unsigned int xchal_have_sext;
-    unsigned int xchal_have_loops;
-    unsigned int xchal_have_threadptr;
-    unsigned int xchal_have_release_sync;
-    unsigned int xchal_have_s32c1i;
-    unsigned int xchal_have_booleans;
-    unsigned int xchal_have_fp;
-    unsigned int xchal_have_fp_div;
-    unsigned int xchal_have_fp_recip;
-    unsigned int xchal_have_fp_sqrt;
-    unsigned int xchal_have_fp_rsqrt;
-    unsigned int xchal_have_fp_postinc;
-    unsigned int xchal_have_dfp;
-    unsigned int xchal_have_dfp_div;
-    unsigned int xchal_have_dfp_recip;
-    unsigned int xchal_have_dfp_sqrt;
-    unsigned int xchal_have_dfp_rsqrt;
-    unsigned int xchal_have_windowed;
-    unsigned int xchal_num_aregs;
-    unsigned int xchal_have_wide_branches;
-    unsigned int xchal_have_predicted_branches;
-    unsigned int xchal_icache_size;
-    unsigned int xchal_dcache_size;
-    unsigned int xchal_icache_linesize;
-    unsigned int xchal_dcache_linesize;
-    unsigned int xchal_icache_linewidth;
-    unsigned int xchal_dcache_linewidth;
-    unsigned int xchal_dcache_is_writeback;
-    unsigned int xchal_have_mmu;
-    unsigned int xchal_mmu_min_pte_page_size;
-    unsigned int xchal_have_debug;
-    unsigned int xchal_num_ibreak;
-    unsigned int xchal_num_dbreak;
-    unsigned int xchal_debuglevel;
-    unsigned int xchal_max_instruction_size;
-    unsigned int xchal_inst_fetch_width;
-    unsigned int xshal_abi;
-    unsigned int xthal_abi_windowed;
-    unsigned int xthal_abi_call0;
+struct xtensa_config
+{
+  size_t config_size;
+  int xchal_have_be;
+  int xchal_have_density;
+  int xchal_have_const16;
+  int xchal_have_abs;
+  int xchal_have_addx;
+  int xchal_have_l32r;
+  int xshal_use_absolute_literals;
+  int xshal_have_text_section_literals;
+  int xchal_have_mac16;
+  int xchal_have_mul16;
+  int xchal_have_mul32;
+  int xchal_have_mul32_high;
+  int xchal_have_div32;
+  int xchal_have_nsa;
+  int xchal_have_minmax;
+  int xchal_have_sext;
+  int xchal_have_loops;
+  int xchal_have_threadptr;
+  int xchal_have_release_sync;
+  int xchal_have_s32c1i;
+  int xchal_have_booleans;
+  int xchal_have_fp;
+  int xchal_have_fp_div;
+  int xchal_have_fp_recip;
+  int xchal_have_fp_sqrt;
+  int xchal_have_fp_rsqrt;
+  int xchal_have_fp_postinc;
+  int xchal_have_dfp;
+  int xchal_have_dfp_div;
+  int xchal_have_dfp_recip;
+  int xchal_have_dfp_sqrt;
+  int xchal_have_dfp_rsqrt;
+  int xchal_have_windowed;
+  int xchal_num_aregs;
+  int xchal_have_wide_branches;
+  int xchal_have_predicted_branches;
+  int xchal_icache_size;
+  int xchal_dcache_size;
+  int xchal_icache_linesize;
+  int xchal_dcache_linesize;
+  int xchal_icache_linewidth;
+  int xchal_dcache_linewidth;
+  int xchal_dcache_is_writeback;
+  int xchal_have_mmu;
+  int xchal_mmu_min_pte_page_size;
+  int xchal_have_debug;
+  int xchal_num_ibreak;
+  int xchal_num_dbreak;
+  int xchal_debuglevel;
+  int xchal_max_instruction_size;
+  int xchal_inst_fetch_width;
+  int xshal_abi;
+  int xthal_abi_windowed;
+  int xthal_abi_call0;
 };
 
 typedef struct xtensa_isa_internal_struct xtensa_isa_internal;
@@ -370,4 +371,4 @@ extern struct xtensa_config *xtensa_get_config (void);
 #ifdef __cplusplus
 }
 #endif
-#endif /* !XTENSA_DYNAMIC_CONFIG_H */
+#endif /* !XTENSA_DYNCONFIG_H */
