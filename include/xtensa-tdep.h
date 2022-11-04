@@ -1,6 +1,6 @@
 /* Target-dependent code for the Xtensa port of GDB, the GNU debugger.
 
-   Copyright (C) 2003-2016 Free Software Foundation, Inc.
+   Copyright (C) 2003-2022 Free Software Foundation, Inc.
 
    This file is part of GDB.
 
@@ -17,11 +17,15 @@
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
-
-#include "arch/xtensa.h"
+#ifndef XTENSA_TDEP_H
+#define XTENSA_TDEP_H
 
 /* XTENSA_TDEP_VERSION can/should be changed along with XTENSA_CONFIG_VERSION
    whenever the "tdep" structure changes in an incompatible way.  */
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #define XTENSA_TDEP_VERSION 0x60
 
@@ -103,7 +107,7 @@ typedef struct
 
 typedef struct 
 {
-  char* name;             	/* Register name.  */
+  const char *name;            	/* Register name.  */
   int offset;             	/* Offset.  */
   xtensa_register_type_t type;  /* Register type.  */
   xtensa_register_group_t group;/* Register group.  */
@@ -130,163 +134,10 @@ typedef struct
 	 ct, bsz, sz, al, tnum, flg, cp, mas, fet, sto},
 #define XTREG_END \
   {0, 0, (xtensa_register_type_t) 0, (xtensa_register_group_t) 0,	\
-   0, 0, 0, 0, -1, 0, 0, 0, 0, 0},
-
-#define XTENSA_REGISTER_FLAGS_PRIVILEGED	0x0001
-#define XTENSA_REGISTER_FLAGS_READABLE		0x0002
-#define XTENSA_REGISTER_FLAGS_WRITABLE		0x0004
-#define XTENSA_REGISTER_FLAGS_VOLATILE		0x0008
-
-/*  Call-ABI for stack frame.  */
-
-typedef enum 
-{
-  CallAbiDefault = 0,		/* Any 'callX' instructions; default stack.  */
-  CallAbiCall0Only,		/* Only 'call0' instructions; flat stack.  */
-} call_abi_t;
+   0, 0, 0, 0, (unsigned) -1, 0, 0, 0, 0, 0},
 
 
-struct ctype_cache
-{
-  struct ctype_cache *next;
-  int size;
-  struct type *virtual_type;
-};
-
-/*  Xtensa-specific target dependencies.  */
-
-struct gdbarch_tdep
-{
-  unsigned int target_flags;
-
-  /* Spill location for TIE register files under ocd.  */
-
-  unsigned int spill_location;
-  unsigned int spill_size;
-
-  char *unused;				/* Placeholder for compatibility.  */
-  call_abi_t call_abi;			/* Calling convention.  */
-
-  /* CPU configuration.  */
-
-  unsigned int debug_interrupt_level;
-
-  unsigned int icache_line_bytes;
-  unsigned int dcache_line_bytes;
-  unsigned int dcache_writeback;
-
-  unsigned int isa_use_windowed_registers;
-  unsigned int isa_use_density_instructions;
-  unsigned int isa_use_exceptions;
-  unsigned int isa_use_ext_l32r;
-  unsigned int isa_max_insn_size;	/* Maximum instruction length.  */
-  unsigned int debug_num_ibreaks;	/* Number of IBREAKs.  */
-  unsigned int debug_num_dbreaks;
-
-  /* Register map.  */
-
-  xtensa_register_t* regmap;
-
-  unsigned int num_regs;	/* Number of registers in register map.  */
-  unsigned int num_nopriv_regs;	/* Number of non-privileged registers.  */
-  unsigned int num_pseudo_regs;	/* Number of pseudo registers.  */
-  unsigned int num_aregs;	/* Size of register file.  */
-  unsigned int num_contexts;
-
-  int ar_base;			/* Register number for AR0.  */
-  int a0_base;			/* Register number for A0 (pseudo).  */
-  int wb_regnum;		/* Register number for WB.  */
-  int ws_regnum;		/* Register number for WS.  */
-  int pc_regnum;		/* Register number for PC.  */
-  int ps_regnum;		/* Register number for PS.  */
-  int lbeg_regnum;		/* Register numbers for count regs.  */
-  int lend_regnum;
-  int lcount_regnum;
-  int sar_regnum;		/* Register number of SAR.  */
-  int litbase_regnum;		/* Register number of LITBASE.  */
-
-  int interrupt_regnum;		/* Register number for interrupt.  */
-  int interrupt2_regnum;	/* Register number for interrupt2.  */
-  int cpenable_regnum;		/* Register number for cpenable.  */
-  int debugcause_regnum;	/* Register number for debugcause.  */
-  int exccause_regnum;		/* Register number for exccause.  */
-  int excvaddr_regnum;		/* Register number for excvaddr.  */
-
-  int max_register_raw_size;
-  int max_register_virtual_size;
-  unsigned long *fp_layout;	/* Layout of custom/TIE regs in 'FP' area.  */
-  unsigned int fp_layout_bytes;	/* Size of layout information (in bytes).  */
-  unsigned long *gregmap;
-
-  /* Cached register types.  */
-  struct ctype_cache *type_entries;
-};
-
-/* Macro to instantiate a gdbarch_tdep structure.  */
-
-#define XTENSA_GDBARCH_TDEP_INSTANTIATE(rmap,spillsz)			\
-  {									\
-    0,				/* target_flags */			\
-    -1,				/* spill_location */			\
-    (spillsz),			/* spill_size */			\
-    0,				/* unused */				\
-    (XSHAL_ABI == XTHAL_ABI_CALL0					\
-     ? CallAbiCall0Only							\
-     : CallAbiDefault),		/* call_abi */				\
-    XCHAL_DEBUGLEVEL,		/* debug_interrupt_level */		\
-    XCHAL_ICACHE_LINESIZE,	/* icache_line_bytes */			\
-    XCHAL_DCACHE_LINESIZE,	/* dcache_line_bytes */			\
-    XCHAL_DCACHE_IS_WRITEBACK,  /* dcache_writeback */			\
-    (XSHAL_ABI != XTHAL_ABI_CALL0),   /* isa_use_windowed_registers */	\
-    XCHAL_HAVE_DENSITY,		 /* isa_use_density_instructions */	\
-    XCHAL_HAVE_EXCEPTIONS,	 /* isa_use_exceptions */		\
-    XSHAL_USE_ABSOLUTE_LITERALS, /* isa_use_ext_l32r */			\
-    XCHAL_MAX_INSTRUCTION_SIZE,  /* isa_max_insn_size */		\
-    XCHAL_NUM_IBREAK,		 /* debug_num_ibreaks */		\
-    XCHAL_NUM_DBREAK,		 /* debug_num_dbreaks */		\
-    rmap,			 /* regmap */				\
-    0,				 /* num_regs */				\
-    0,				 /* num_nopriv_regs */			\
-    0,				 /* num_pseudo_regs */			\
-    XCHAL_NUM_AREGS,		 /* num_aregs */			\
-    XCHAL_NUM_CONTEXTS,		 /* num_contexts */			\
-    -1,				 /* ar_base */				\
-    -1,				 /* a0_base */				\
-    -1,				 /* wb_regnum */			\
-    -1,				 /* ws_regnum */			\
-    -1,				 /* pc_regnum */			\
-    -1,				 /* ps_regnum */			\
-    -1,				 /* lbeg_regnum */			\
-    -1,				 /* lend_regnum */			\
-    -1,				 /* lcount_regnum */			\
-    -1,				 /* sar_regnum */			\
-    -1,				 /* litbase_regnum */			\
-    -1,				 /* interrupt_regnum */			\
-    -1,				 /* interrupt2_regnum */		\
-    -1,				 /* cpenable_regnum */			\
-    -1,				 /* debugcause_regnum */		\
-    -1,				 /* exccause_regnum */			\
-    -1,				 /* excvaddr_regnum */			\
-    0,				 /* max_register_raw_size */		\
-    0,				 /* max_register_virtual_size */	\
-    0,				 /* fp_layout */			\
-    0,				 /* fp_layout_bytes */			\
-    0,				 /* gregmap */				\
-  }
-#define XTENSA_CONFIG_INSTANTIATE(rmap,spill_size)	\
-	struct gdbarch_tdep xtensa_tdep = \
-	  XTENSA_GDBARCH_TDEP_INSTANTIATE(rmap,spill_size);
-
-#ifndef XCHAL_NUM_CONTEXTS
-#define XCHAL_NUM_CONTEXTS	0
+#ifdef __cplusplus
+}
 #endif
-#ifndef XCHAL_HAVE_EXCEPTIONS
-#define XCHAL_HAVE_EXCEPTIONS	1
-#endif
-#define WB_SHIFT	  2
-
-/* We assign fixed numbers to the registers of the "current" window 
-   (i.e., relative to WB).  The registers get remapped via the reg_map 
-   data structure to their corresponding register in the AR register 
-   file (see xtensa-tdep.c).  */
-
+#endif /* XTENSA_TDEP_H */
