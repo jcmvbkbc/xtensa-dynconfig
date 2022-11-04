@@ -1,11 +1,26 @@
+CONF_DIR ?= config
+
 SOURCE_FILES = xtensa-config.c \
-	       config/$(CONFIG)/binutils/bfd/xtensa-modules.c \
-	       config/$(CONFIG)/gdb/gdb/xtensa-config.c \
-	       config/$(CONFIG)/gdb/gdb/xtensa-xtregs.c
+	       $(CONF_DIR)/%/binutils/bfd/xtensa-modules.c \
+	       $(CONF_DIR)/%/gdb/gdb/xtensa-config.c \
+	       $(CONF_DIR)/%/gdb/gdb/xtensa-xtregs.c
+
 INCLUDE += -Iinclude \
-	   -Iconfig/$(CONFIG)/binutils/include
+           -I$(CONF_DIR)/$*/binutils/include
 
 CFLAGS += $(INCLUDE) -fPIC -O2
 
-xtensa-config-$(CONFIG).so: $(SOURCE_FILES)
+%.so: $(SOURCE_FILES)
 	$(CC) -shared $(CFLAGS) $^ -o $@
+
+.PHONY: libs
+libs: $(patsubst $(CONF_DIR)/%,%.so,$(wildcard $(CONF_DIR)/*))
+
+.PHONY: clean
+clean:
+	rm -fr *.so
+
+.PHONY: install
+install: libs
+	mkdir -p $(DESTDIR)$(PREFIX)/lib
+	cp -f *.so $(DESTDIR)$(PREFIX)/lib
