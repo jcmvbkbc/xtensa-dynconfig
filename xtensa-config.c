@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Cadence Design Systems Inc.
+ * Copyright (c) 2022 Cadence Design Systems Inc.
  *
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -28,14 +28,14 @@
 
 #undef XTENSA_CONFIG_ENTRY
 #define XTENSA_CONFIG_ENTRY(a) a
-struct xtensa_config xtensa_config = XTENSA_CONFIG_INITIALIZER;
+XTENSA_CONFIG_INSTANCE_LIST;
 
 #define _STRINGIFY(a) #a
 #define STRINGIFY(a) _STRINGIFY(a)
 
 #undef XTENSA_CONFIG_ENTRY
 #define XTENSA_CONFIG_ENTRY(a) "__" #a "=" STRINGIFY(a)
-const char *xtensa_config_strings[] = {
+const char * const xtensa_config_strings[] = {
 	XTENSA_CONFIG_ENTRY_LIST,
 	NULL,
 };

@@ -22,9 +22,25 @@
 extern "C" {
 #endif
 
-struct xtensa_config
+/*
+ * Config versioning.
+ *
+ * When new config entries need to be passed through dynconfig
+ * create new xtensa_config_v<N> structure and put them there.
+ * Declare new function xtensa_get_config_v<N> (void).
+ * Define corresponding X*HAL_* macros by accessing xtensa_get_config_v<N> ().
+ * Define macro XTENSA_CONFIG_V<N>_ENTRY_LIST by listing
+ * XTENSA_CONFIG_ENTRY for every entry in the new structure.
+ * Add constant definition for the new xtensa_config_v<N> to the
+ * XTENSA_CONFIG_INSTANCE_LIST.
+ * Add XTENSA_CONFIG_V<N>_ENTRY_LIST to the XTENSA_CONFIG_ENTRY_LIST.
+ *
+ * On the user side (gcc/binutils/...) add definition for the function
+ * xtensa_get_config_v<N> (void).
+ */
+
+struct xtensa_config_v1
 {
-  size_t config_size;
   int xchal_have_be;
   int xchal_have_density;
   int xchal_have_const16;
@@ -83,8 +99,10 @@ struct xtensa_config
 
 typedef struct xtensa_isa_internal_struct xtensa_isa_internal;
 
-extern void *xtensa_load_config (const char *name, void *def);
-extern struct xtensa_config *xtensa_get_config (void);
+extern const void *xtensa_load_config (const char *name,
+				       const void *no_plugin_def,
+				       const void *no_name_def);
+extern const struct xtensa_config_v1 *xtensa_get_config_v1 (void);
 
 #ifdef XTENSA_CONFIG_DEFINITION
 
@@ -138,7 +156,7 @@ extern struct xtensa_config *xtensa_get_config (void);
 
 #define XTENSA_CONFIG_ENTRY(a) a
 
-#define XTENSA_CONFIG_ENTRY_LIST \
+#define XTENSA_CONFIG_V1_ENTRY_LIST \
     XTENSA_CONFIG_ENTRY(XCHAL_HAVE_BE), \
     XTENSA_CONFIG_ENTRY(XCHAL_HAVE_DENSITY), \
     XTENSA_CONFIG_ENTRY(XCHAL_HAVE_CONST16), \
@@ -194,177 +212,180 @@ extern struct xtensa_config *xtensa_get_config (void);
     XTENSA_CONFIG_ENTRY(XTHAL_ABI_WINDOWED), \
     XTENSA_CONFIG_ENTRY(XTHAL_ABI_CALL0)
 
-#define XTENSA_CONFIG_INITIALIZER { \
-    sizeof (struct xtensa_config), \
-    XTENSA_CONFIG_ENTRY_LIST, \
+#define XTENSA_CONFIG_INSTANCE_LIST \
+const struct xtensa_config_v1 xtensa_config_v1 = { \
+    XTENSA_CONFIG_V1_ENTRY_LIST, \
 }
+
+#define XTENSA_CONFIG_ENTRY_LIST \
+    XTENSA_CONFIG_V1_ENTRY_LIST
 
 #else /* XTENSA_CONFIG_DEFINITION */
 
 #undef XCHAL_HAVE_BE
-#define XCHAL_HAVE_BE			(xtensa_get_config ()->xchal_have_be)
+#define XCHAL_HAVE_BE			(xtensa_get_config_v1 ()->xchal_have_be)
 
 #undef XCHAL_HAVE_DENSITY
-#define XCHAL_HAVE_DENSITY		(xtensa_get_config ()->xchal_have_density)
+#define XCHAL_HAVE_DENSITY		(xtensa_get_config_v1 ()->xchal_have_density)
 
 #undef XCHAL_HAVE_CONST16
-#define XCHAL_HAVE_CONST16		(xtensa_get_config ()->xchal_have_const16)
+#define XCHAL_HAVE_CONST16		(xtensa_get_config_v1 ()->xchal_have_const16)
 
 #undef XCHAL_HAVE_ABS
-#define XCHAL_HAVE_ABS			(xtensa_get_config ()->xchal_have_abs)
+#define XCHAL_HAVE_ABS			(xtensa_get_config_v1 ()->xchal_have_abs)
 
 #undef XCHAL_HAVE_ADDX
-#define XCHAL_HAVE_ADDX			(xtensa_get_config ()->xchal_have_addx)
+#define XCHAL_HAVE_ADDX			(xtensa_get_config_v1 ()->xchal_have_addx)
 
 #undef XCHAL_HAVE_L32R
-#define XCHAL_HAVE_L32R			(xtensa_get_config ()->xchal_have_l32r)
+#define XCHAL_HAVE_L32R			(xtensa_get_config_v1 ()->xchal_have_l32r)
 
 #undef XSHAL_USE_ABSOLUTE_LITERALS
-#define XSHAL_USE_ABSOLUTE_LITERALS	(xtensa_get_config ()->xshal_use_absolute_literals)
+#define XSHAL_USE_ABSOLUTE_LITERALS	(xtensa_get_config_v1 ()->xshal_use_absolute_literals)
 
 #undef XSHAL_HAVE_TEXT_SECTION_LITERALS
-#define XSHAL_HAVE_TEXT_SECTION_LITERALS (xtensa_get_config ()->xshal_have_text_section_literals)
+#define XSHAL_HAVE_TEXT_SECTION_LITERALS (xtensa_get_config_v1 ()->xshal_have_text_section_literals)
 
 #undef XCHAL_HAVE_MAC16
-#define XCHAL_HAVE_MAC16		(xtensa_get_config ()->xchal_have_mac16)
+#define XCHAL_HAVE_MAC16		(xtensa_get_config_v1 ()->xchal_have_mac16)
 
 #undef XCHAL_HAVE_MUL16
-#define XCHAL_HAVE_MUL16		(xtensa_get_config ()->xchal_have_mul16)
+#define XCHAL_HAVE_MUL16		(xtensa_get_config_v1 ()->xchal_have_mul16)
 
 #undef XCHAL_HAVE_MUL32
-#define XCHAL_HAVE_MUL32		(xtensa_get_config ()->xchal_have_mul32)
+#define XCHAL_HAVE_MUL32		(xtensa_get_config_v1 ()->xchal_have_mul32)
 
 #undef XCHAL_HAVE_MUL32_HIGH
-#define XCHAL_HAVE_MUL32_HIGH		(xtensa_get_config ()->xchal_have_mul32_high)
+#define XCHAL_HAVE_MUL32_HIGH		(xtensa_get_config_v1 ()->xchal_have_mul32_high)
 
 #undef XCHAL_HAVE_DIV32
-#define XCHAL_HAVE_DIV32		(xtensa_get_config ()->xchal_have_div32)
+#define XCHAL_HAVE_DIV32		(xtensa_get_config_v1 ()->xchal_have_div32)
 
 #undef XCHAL_HAVE_NSA
-#define XCHAL_HAVE_NSA			(xtensa_get_config ()->xchal_have_nsa)
+#define XCHAL_HAVE_NSA			(xtensa_get_config_v1 ()->xchal_have_nsa)
 
 #undef XCHAL_HAVE_MINMAX
-#define XCHAL_HAVE_MINMAX		(xtensa_get_config ()->xchal_have_minmax)
+#define XCHAL_HAVE_MINMAX		(xtensa_get_config_v1 ()->xchal_have_minmax)
 
 #undef XCHAL_HAVE_SEXT
-#define XCHAL_HAVE_SEXT			(xtensa_get_config ()->xchal_have_sext)
+#define XCHAL_HAVE_SEXT			(xtensa_get_config_v1 ()->xchal_have_sext)
 
 #undef XCHAL_HAVE_LOOPS
-#define XCHAL_HAVE_LOOPS		(xtensa_get_config ()->xchal_have_loops)
+#define XCHAL_HAVE_LOOPS		(xtensa_get_config_v1 ()->xchal_have_loops)
 
 #undef XCHAL_HAVE_THREADPTR
-#define XCHAL_HAVE_THREADPTR		(xtensa_get_config ()->xchal_have_threadptr)
+#define XCHAL_HAVE_THREADPTR		(xtensa_get_config_v1 ()->xchal_have_threadptr)
 
 #undef XCHAL_HAVE_RELEASE_SYNC
-#define XCHAL_HAVE_RELEASE_SYNC		(xtensa_get_config ()->xchal_have_release_sync)
+#define XCHAL_HAVE_RELEASE_SYNC		(xtensa_get_config_v1 ()->xchal_have_release_sync)
 
 #undef XCHAL_HAVE_S32C1I
-#define XCHAL_HAVE_S32C1I		(xtensa_get_config ()->xchal_have_s32c1i)
+#define XCHAL_HAVE_S32C1I		(xtensa_get_config_v1 ()->xchal_have_s32c1i)
 
 #undef XCHAL_HAVE_BOOLEANS
-#define XCHAL_HAVE_BOOLEANS		(xtensa_get_config ()->xchal_have_booleans)
+#define XCHAL_HAVE_BOOLEANS		(xtensa_get_config_v1 ()->xchal_have_booleans)
 
 #undef XCHAL_HAVE_FP
-#define XCHAL_HAVE_FP			(xtensa_get_config ()->xchal_have_fp)
+#define XCHAL_HAVE_FP			(xtensa_get_config_v1 ()->xchal_have_fp)
 
 #undef XCHAL_HAVE_FP_DIV
-#define XCHAL_HAVE_FP_DIV		(xtensa_get_config ()->xchal_have_fp_div)
+#define XCHAL_HAVE_FP_DIV		(xtensa_get_config_v1 ()->xchal_have_fp_div)
 
 #undef XCHAL_HAVE_FP_RECIP
-#define XCHAL_HAVE_FP_RECIP		(xtensa_get_config ()->xchal_have_fp_recip)
+#define XCHAL_HAVE_FP_RECIP		(xtensa_get_config_v1 ()->xchal_have_fp_recip)
 
 #undef XCHAL_HAVE_FP_SQRT
-#define XCHAL_HAVE_FP_SQRT		(xtensa_get_config ()->xchal_have_fp_sqrt)
+#define XCHAL_HAVE_FP_SQRT		(xtensa_get_config_v1 ()->xchal_have_fp_sqrt)
 
 #undef XCHAL_HAVE_FP_RSQRT
-#define XCHAL_HAVE_FP_RSQRT		(xtensa_get_config ()->xchal_have_fp_rsqrt)
+#define XCHAL_HAVE_FP_RSQRT		(xtensa_get_config_v1 ()->xchal_have_fp_rsqrt)
 
 #undef XCHAL_HAVE_FP_POSTINC
-#define XCHAL_HAVE_FP_POSTINC		(xtensa_get_config ()->xchal_have_fp_postinc)
+#define XCHAL_HAVE_FP_POSTINC		(xtensa_get_config_v1 ()->xchal_have_fp_postinc)
 
 #undef XCHAL_HAVE_DFP
-#define XCHAL_HAVE_DFP			(xtensa_get_config ()->xchal_have_dfp)
+#define XCHAL_HAVE_DFP			(xtensa_get_config_v1 ()->xchal_have_dfp)
 
 #undef XCHAL_HAVE_DFP_DIV
-#define XCHAL_HAVE_DFP_DIV		(xtensa_get_config ()->xchal_have_dfp_div)
+#define XCHAL_HAVE_DFP_DIV		(xtensa_get_config_v1 ()->xchal_have_dfp_div)
 
 #undef XCHAL_HAVE_DFP_RECIP
-#define XCHAL_HAVE_DFP_RECIP		(xtensa_get_config ()->xchal_have_dfp_recip)
+#define XCHAL_HAVE_DFP_RECIP		(xtensa_get_config_v1 ()->xchal_have_dfp_recip)
 
 #undef XCHAL_HAVE_DFP_SQRT
-#define XCHAL_HAVE_DFP_SQRT		(xtensa_get_config ()->xchal_have_dfp_sqrt)
+#define XCHAL_HAVE_DFP_SQRT		(xtensa_get_config_v1 ()->xchal_have_dfp_sqrt)
 
 #undef XCHAL_HAVE_DFP_RSQRT
-#define XCHAL_HAVE_DFP_RSQRT		(xtensa_get_config ()->xchal_have_dfp_rsqrt)
+#define XCHAL_HAVE_DFP_RSQRT		(xtensa_get_config_v1 ()->xchal_have_dfp_rsqrt)
 
 #undef XCHAL_HAVE_WINDOWED
-#define XCHAL_HAVE_WINDOWED		(xtensa_get_config ()->xchal_have_windowed)
+#define XCHAL_HAVE_WINDOWED		(xtensa_get_config_v1 ()->xchal_have_windowed)
 
 #undef XCHAL_NUM_AREGS
-#define XCHAL_NUM_AREGS			(xtensa_get_config ()->xchal_num_aregs)
+#define XCHAL_NUM_AREGS			(xtensa_get_config_v1 ()->xchal_num_aregs)
 
 #undef XCHAL_HAVE_WIDE_BRANCHES
-#define XCHAL_HAVE_WIDE_BRANCHES	(xtensa_get_config ()->xchal_have_wide_branches)
+#define XCHAL_HAVE_WIDE_BRANCHES	(xtensa_get_config_v1 ()->xchal_have_wide_branches)
 
 #undef XCHAL_HAVE_PREDICTED_BRANCHES
-#define XCHAL_HAVE_PREDICTED_BRANCHES	(xtensa_get_config ()->xchal_have_predicted_branches)
+#define XCHAL_HAVE_PREDICTED_BRANCHES	(xtensa_get_config_v1 ()->xchal_have_predicted_branches)
 
 
 #undef XCHAL_ICACHE_SIZE
-#define XCHAL_ICACHE_SIZE		(xtensa_get_config ()->xchal_icache_size)
+#define XCHAL_ICACHE_SIZE		(xtensa_get_config_v1 ()->xchal_icache_size)
 
 #undef XCHAL_DCACHE_SIZE
-#define XCHAL_DCACHE_SIZE		(xtensa_get_config ()->xchal_dcache_size)
+#define XCHAL_DCACHE_SIZE		(xtensa_get_config_v1 ()->xchal_dcache_size)
 
 #undef XCHAL_ICACHE_LINESIZE
-#define XCHAL_ICACHE_LINESIZE		(xtensa_get_config ()->xchal_icache_linesize)
+#define XCHAL_ICACHE_LINESIZE		(xtensa_get_config_v1 ()->xchal_icache_linesize)
 
 #undef XCHAL_DCACHE_LINESIZE
-#define XCHAL_DCACHE_LINESIZE		(xtensa_get_config ()->xchal_dcache_linesize)
+#define XCHAL_DCACHE_LINESIZE		(xtensa_get_config_v1 ()->xchal_dcache_linesize)
 
 #undef XCHAL_ICACHE_LINEWIDTH
-#define XCHAL_ICACHE_LINEWIDTH		(xtensa_get_config ()->xchal_icache_linewidth)
+#define XCHAL_ICACHE_LINEWIDTH		(xtensa_get_config_v1 ()->xchal_icache_linewidth)
 
 #undef XCHAL_DCACHE_LINEWIDTH
-#define XCHAL_DCACHE_LINEWIDTH		(xtensa_get_config ()->xchal_dcache_linewidth)
+#define XCHAL_DCACHE_LINEWIDTH		(xtensa_get_config_v1 ()->xchal_dcache_linewidth)
 
 #undef XCHAL_DCACHE_IS_WRITEBACK
-#define XCHAL_DCACHE_IS_WRITEBACK	(xtensa_get_config ()->xchal_dcache_is_writeback)
+#define XCHAL_DCACHE_IS_WRITEBACK	(xtensa_get_config_v1 ()->xchal_dcache_is_writeback)
 
 
 #undef XCHAL_HAVE_MMU
-#define XCHAL_HAVE_MMU			(xtensa_get_config ()->xchal_have_mmu)
+#define XCHAL_HAVE_MMU			(xtensa_get_config_v1 ()->xchal_have_mmu)
 
 #undef XCHAL_MMU_MIN_PTE_PAGE_SIZE
-#define XCHAL_MMU_MIN_PTE_PAGE_SIZE	(xtensa_get_config ()->xchal_mmu_min_pte_page_size)
+#define XCHAL_MMU_MIN_PTE_PAGE_SIZE	(xtensa_get_config_v1 ()->xchal_mmu_min_pte_page_size)
 
 
 #undef XCHAL_HAVE_DEBUG
-#define XCHAL_HAVE_DEBUG		(xtensa_get_config ()->xchal_have_debug)
+#define XCHAL_HAVE_DEBUG		(xtensa_get_config_v1 ()->xchal_have_debug)
 
 #undef XCHAL_NUM_IBREAK
-#define XCHAL_NUM_IBREAK		(xtensa_get_config ()->xchal_num_ibreak)
+#define XCHAL_NUM_IBREAK		(xtensa_get_config_v1 ()->xchal_num_ibreak)
 
 #undef XCHAL_NUM_DBREAK
-#define XCHAL_NUM_DBREAK		(xtensa_get_config ()->xchal_num_dbreak)
+#define XCHAL_NUM_DBREAK		(xtensa_get_config_v1 ()->xchal_num_dbreak)
 
 #undef XCHAL_DEBUGLEVEL
-#define XCHAL_DEBUGLEVEL		(xtensa_get_config ()->xchal_debuglevel)
+#define XCHAL_DEBUGLEVEL		(xtensa_get_config_v1 ()->xchal_debuglevel)
 
 
 #undef XCHAL_MAX_INSTRUCTION_SIZE
-#define XCHAL_MAX_INSTRUCTION_SIZE	(xtensa_get_config ()->xchal_max_instruction_size)
+#define XCHAL_MAX_INSTRUCTION_SIZE	(xtensa_get_config_v1 ()->xchal_max_instruction_size)
 
 #undef XCHAL_INST_FETCH_WIDTH
-#define XCHAL_INST_FETCH_WIDTH		(xtensa_get_config ()->xchal_inst_fetch_width)
+#define XCHAL_INST_FETCH_WIDTH		(xtensa_get_config_v1 ()->xchal_inst_fetch_width)
 
 
 #undef XSHAL_ABI
 #undef XTHAL_ABI_WINDOWED
 #undef XTHAL_ABI_CALL0
-#define XSHAL_ABI			(xtensa_get_config ()->xshal_abi)
-#define XTHAL_ABI_WINDOWED		(xtensa_get_config ()->xthal_abi_windowed)
-#define XTHAL_ABI_CALL0			(xtensa_get_config ()->xthal_abi_call0)
+#define XSHAL_ABI			(xtensa_get_config_v1 ()->xshal_abi)
+#define XTHAL_ABI_WINDOWED		(xtensa_get_config_v1 ()->xthal_abi_windowed)
+#define XTHAL_ABI_CALL0			(xtensa_get_config_v1 ()->xthal_abi_call0)
 
 #endif /* XTENSA_CONFIG_DEFINITION */
 
