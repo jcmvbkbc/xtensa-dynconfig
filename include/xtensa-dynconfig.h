@@ -97,12 +97,20 @@ struct xtensa_config_v1
   int xthal_abi_call0;
 };
 
+struct xtensa_config_v2
+{
+  int xchal_m_stage;
+  int xtensa_march_latest;
+  int xtensa_march_earliest;
+};
+
 typedef struct xtensa_isa_internal_struct xtensa_isa_internal;
 
 extern const void *xtensa_load_config (const char *name,
 				       const void *no_plugin_def,
 				       const void *no_name_def);
 extern const struct xtensa_config_v1 *xtensa_get_config_v1 (void);
+extern const struct xtensa_config_v2 *xtensa_get_config_v2 (void);
 
 #ifdef XTENSA_CONFIG_DEFINITION
 
@@ -152,6 +160,26 @@ extern const struct xtensa_config_v1 *xtensa_get_config_v1 (void);
 
 #ifndef XCHAL_MMU_MIN_PTE_PAGE_SIZE
 #define XCHAL_MMU_MIN_PTE_PAGE_SIZE 1
+#endif
+
+#ifndef XTHAL_ABI_WINDOWED
+#define XTHAL_ABI_WINDOWED 0
+#endif
+
+#ifndef XTHAL_ABI_CALL0
+#define XTHAL_ABI_CALL0 1
+#endif
+
+#ifndef XCHAL_M_STAGE
+#define XCHAL_M_STAGE 0
+#endif
+
+#ifndef XTENSA_MARCH_LATEST
+#define XTENSA_MARCH_LATEST 0
+#endif
+
+#ifndef XTENSA_MARCH_EARLIEST
+#define XTENSA_MARCH_EARLIEST 0
 #endif
 
 #define XTENSA_CONFIG_ENTRY(a) a
@@ -212,13 +240,22 @@ extern const struct xtensa_config_v1 *xtensa_get_config_v1 (void);
     XTENSA_CONFIG_ENTRY(XTHAL_ABI_WINDOWED), \
     XTENSA_CONFIG_ENTRY(XTHAL_ABI_CALL0)
 
+#define XTENSA_CONFIG_V2_ENTRY_LIST \
+    XTENSA_CONFIG_ENTRY(XCHAL_M_STAGE), \
+    XTENSA_CONFIG_ENTRY(XTENSA_MARCH_LATEST), \
+    XTENSA_CONFIG_ENTRY(XTENSA_MARCH_EARLIEST)
+
 #define XTENSA_CONFIG_INSTANCE_LIST \
 const struct xtensa_config_v1 xtensa_config_v1 = { \
     XTENSA_CONFIG_V1_ENTRY_LIST, \
+}; \
+const struct xtensa_config_v2 xtensa_config_v2 = { \
+    XTENSA_CONFIG_V2_ENTRY_LIST, \
 }
 
 #define XTENSA_CONFIG_ENTRY_LIST \
-    XTENSA_CONFIG_V1_ENTRY_LIST
+    XTENSA_CONFIG_V1_ENTRY_LIST, \
+    XTENSA_CONFIG_V2_ENTRY_LIST
 
 #else /* XTENSA_CONFIG_DEFINITION */
 
@@ -386,6 +423,16 @@ const struct xtensa_config_v1 xtensa_config_v1 = { \
 #define XSHAL_ABI			(xtensa_get_config_v1 ()->xshal_abi)
 #define XTHAL_ABI_WINDOWED		(xtensa_get_config_v1 ()->xthal_abi_windowed)
 #define XTHAL_ABI_CALL0			(xtensa_get_config_v1 ()->xthal_abi_call0)
+
+
+#undef XCHAL_M_STAGE
+#define XCHAL_M_STAGE			(xtensa_get_config_v2 ()->xchal_m_stage)
+
+#undef XTENSA_MARCH_LATEST
+#define XTENSA_MARCH_LATEST		(xtensa_get_config_v2 ()->xtensa_march_latest)
+
+#undef XTENSA_MARCH_EARLIEST
+#define XTENSA_MARCH_EARLIEST		(xtensa_get_config_v2 ()->xtensa_march_earliest)
 
 #endif /* XTENSA_CONFIG_DEFINITION */
 
