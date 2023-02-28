@@ -9,6 +9,8 @@ SOURCE_FILES = xtensa-config.c \
 INCLUDE += -Iinclude \
            -I$(CONF_DIR)/$*/binutils \
            -I$(CONF_DIR)/$*/xtensa/config
+
+CFLAGS += -DORIG
 else
 SOURCE_FILES = xtensa-config.c \
 	       $(CONF_DIR)/%/binutils/bfd/xtensa-modules.c \

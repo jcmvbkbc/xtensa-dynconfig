@@ -23,6 +23,9 @@
 
 #include <stdlib.h>
 #define XTENSA_CONFIG_DEFINITION
+#ifdef ORIG
+#include <core-isa.h>
+#endif
 #include <xtensa-config.h>
 #include <xtensa-dynconfig.h>
 
