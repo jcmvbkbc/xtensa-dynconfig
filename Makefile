@@ -1,5 +1,15 @@
 CONF_DIR ?= config
 
+ifdef ORIG
+SOURCE_FILES = xtensa-config.c \
+	       $(CONF_DIR)/%/binutils/xtensa-modules.c \
+	       $(CONF_DIR)/%/gdb/xtensa-config.c \
+	       $(CONF_DIR)/%/gdb/xtensa-xtregs.c
+
+INCLUDE += -Iinclude \
+           -I$(CONF_DIR)/$*/binutils \
+           -I$(CONF_DIR)/$*/xtensa/config
+else
 SOURCE_FILES = xtensa-config.c \
 	       $(CONF_DIR)/%/binutils/bfd/xtensa-modules.c \
 	       $(CONF_DIR)/%/gdb/gdb/xtensa-config.c \
@@ -7,6 +17,7 @@ SOURCE_FILES = xtensa-config.c \
 
 INCLUDE += -Iinclude \
            -I$(CONF_DIR)/$*/binutils/include
+endif
 
 CFLAGS += $(INCLUDE) -fPIC -O2
 
