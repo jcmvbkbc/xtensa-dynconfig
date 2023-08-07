@@ -24,6 +24,17 @@
 #include <stdlib.h>
 #define XTENSA_CONFIG_DEFINITION
 #include <xtensa-config.h>
+/* Define macros just to make compiler happy.
+ * These values will not use in dynconfig.
+ */
+#define XTHAL_TIMER_UNCONFIGURED -1
+#define XTHAL_INTTYPE_EXTERN_LEVEL
+#define XTHAL_INTTYPE_TIMER
+#define XTHAL_INTTYPE_SOFTWARE
+#define XTHAL_INTTYPE_EXTERN_EDGE
+#define XTHAL_INTTYPE_PROFILING
+#define XTHAL_INTTYPE_NMI
+#include <core-isa.h>
 #include <xtensa-dynconfig.h>
 
 #undef XTENSA_CONFIG_ENTRY

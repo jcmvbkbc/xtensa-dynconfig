@@ -112,6 +112,14 @@ struct xtensa_config_v3
   int xchal_have_xea3;
 };
 
+struct xtensa_config_v4
+{
+  int xchal_unaligned_load_exception;
+  int xchal_mayhave_erratum_xea1kwin;
+  int xchal_have_flix3;
+  int xchal_have_pdx4;
+};
+
 typedef struct xtensa_isa_internal_struct xtensa_isa_internal;
 
 extern const void *xtensa_load_config (const char *name,
@@ -120,6 +128,7 @@ extern const void *xtensa_load_config (const char *name,
 extern const struct xtensa_config_v1 *xtensa_get_config_v1 (void);
 extern const struct xtensa_config_v2 *xtensa_get_config_v2 (void);
 extern const struct xtensa_config_v3 *xtensa_get_config_v3 (void);
+extern const struct xtensa_config_v4 *xtensa_get_config_v4 (void);
 
 #ifdef XTENSA_CONFIG_DEFINITION
 
@@ -207,6 +216,22 @@ extern const struct xtensa_config_v3 *xtensa_get_config_v3 (void);
 #define XCHAL_HAVE_XEA3 0
 #endif
 
+#ifndef XCHAL_UNALIGNED_LOAD_EXCEPTION
+#define XCHAL_UNALIGNED_LOAD_EXCEPTION 0
+#endif
+
+#ifndef XCHAL_MAYHAVE_ERRATUM_XEA1KWIN
+#define XCHAL_MAYHAVE_ERRATUM_XEA1KWIN 0
+#endif
+
+#ifndef XCHAL_HAVE_FLIX3
+#define XCHAL_HAVE_FLIX3 0
+#endif
+
+#ifndef XCHAL_HAVE_PDX4
+#define XCHAL_HAVE_PDX4 0
+#endif
+
 #define XTENSA_CONFIG_ENTRY(a) a
 
 #define XTENSA_CONFIG_V1_ENTRY_LIST \
@@ -276,6 +301,12 @@ extern const struct xtensa_config_v3 *xtensa_get_config_v3 (void);
     XTENSA_CONFIG_ENTRY(XCHAL_HAVE_EXCLUSIVE), \
     XTENSA_CONFIG_ENTRY(XCHAL_HAVE_XEA3)
 
+#define XTENSA_CONFIG_V4_ENTRY_LIST \
+    XTENSA_CONFIG_ENTRY(XCHAL_UNALIGNED_LOAD_EXCEPTION), \
+    XTENSA_CONFIG_ENTRY(XCHAL_MAYHAVE_ERRATUM_XEA1KWIN), \
+    XTENSA_CONFIG_ENTRY(XCHAL_HAVE_FLIX3), \
+    XTENSA_CONFIG_ENTRY(XCHAL_HAVE_PDX4)
+
 #define XTENSA_CONFIG_INSTANCE_LIST \
 const struct xtensa_config_v1 xtensa_config_v1 = { \
     XTENSA_CONFIG_V1_ENTRY_LIST, \
@@ -285,12 +316,16 @@ const struct xtensa_config_v2 xtensa_config_v2 = { \
 }; \
 const struct xtensa_config_v3 xtensa_config_v3 = { \
     XTENSA_CONFIG_V3_ENTRY_LIST, \
+}; \
+const struct xtensa_config_v4 xtensa_config_v4 = { \
+    XTENSA_CONFIG_V4_ENTRY_LIST, \
 }
 
 #define XTENSA_CONFIG_ENTRY_LIST \
     XTENSA_CONFIG_V1_ENTRY_LIST, \
     XTENSA_CONFIG_V2_ENTRY_LIST, \
-    XTENSA_CONFIG_V3_ENTRY_LIST
+    XTENSA_CONFIG_V3_ENTRY_LIST, \
+    XTENSA_CONFIG_V4_ENTRY_LIST
 
 #else /* XTENSA_CONFIG_DEFINITION */
 
@@ -481,6 +516,19 @@ const struct xtensa_config_v3 xtensa_config_v3 = { \
 
 #undef XCHAL_HAVE_XEA3
 #define XCHAL_HAVE_XEA3			(xtensa_get_config_v3 ()->xchal_have_xea3)
+
+
+#undef XCHAL_UNALIGNED_LOAD_EXCEPTION
+#define XCHAL_UNALIGNED_LOAD_EXCEPTION		(xtensa_get_config_v4 ()->xchal_unaligned_load_exception)
+
+#undef XCHAL_MAYHAVE_ERRATUM_XEA1KWIN
+#define XCHAL_MAYHAVE_ERRATUM_XEA1KWIN		(xtensa_get_config_v4 ()->xchal_mayhave_erratum_xea1kwin)
+
+#undef XCHAL_HAVE_FLIX3
+#define XCHAL_HAVE_FLIX3		(xtensa_get_config_v4 ()->xchal_have_flix3)
+
+#undef XCHAL_HAVE_PDX4
+#define XCHAL_HAVE_PDX4			(xtensa_get_config_v4 ()->xchal_have_pdx4)
 
 #endif /* XTENSA_CONFIG_DEFINITION */
 

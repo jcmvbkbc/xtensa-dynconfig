@@ -6,7 +6,8 @@ SOURCE_FILES = xtensa-config.c \
 	       $(CONF_DIR)/%/gdb/gdb/xtensa-xtregs.c
 
 INCLUDE += -Iinclude \
-           -I$(CONF_DIR)/$*/binutils/include
+           -I$(CONF_DIR)/$*/binutils/include \
+           -I$(CONF_DIR)/$*/newlib/newlib/libc/sys/xtensa/include/xtensa/config
 
 CFLAGS += $(INCLUDE) -fPIC -O2
 
